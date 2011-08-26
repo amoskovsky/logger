@@ -1,0 +1,14 @@
+.svn
+*.ncb
+*.suo
+*.obj
+Debug*
+Release*
+*.tmp
+*.user
+.out
+*.pyc
+.scons*
+*.idb
+*.log
+*.pdb
