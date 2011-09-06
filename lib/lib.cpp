@@ -15,6 +15,7 @@ int _tmain(int argc, _TCHAR* argv[])
     info_log << "test3" << endl;
     warn_log << "test2" << endl;
     error_log << "test1" << endl;
+    info_log << "manip: " << hex << 123 << "/"<< dec << 123 << " end" << endl;
 	return 0;
 }
 
