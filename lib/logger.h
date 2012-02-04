@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 #include <ios>
+#include <stdexcept>
+#include <iostream>
 
 #include <boost/thread/tss.hpp>
 #include <boost/thread/mutex.hpp>
@@ -19,6 +21,7 @@ using boost::thread_specific_ptr;
 class destination {
 public:
     static destination& instance();
+    static void destroy();
     void file_output(bool value);
     bool file_output() const;
     void console_output(bool value);
@@ -78,6 +81,7 @@ extern buffer error_logger;
 
 void setup(const string& file_name, bool console_output, int log_level);
 void truncate();
+void cleanup();
 
 } // namespace logger 
 
@@ -87,3 +91,12 @@ void truncate();
 #define warn_log if (logger::warn_logger.enabled()) logger::warn_logger
 #define error_log if (logger::error_logger.enabled()) logger::error_logger
 
+
+#define assert_throw(cond) if (!(cond)) \
+    do { \
+        std::stringstream os; os << "assert failed at " \
+        << __FILE__ << " line " << __LINE__ << ": " << #cond; \
+        std::string msg = os.str(); \
+        error_log << msg << std::endl; \
+        throw std::runtime_error(msg); \
+    } while (0)

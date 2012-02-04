@@ -99,6 +99,14 @@ void destination::truncate()
     boost::filesystem::remove(m_file_name.c_str());
 }
 
+void destination::destroy()
+{
+    if (m_instance) {
+        delete m_instance;
+        m_instance = 0;
+    }
+}
+
 
 
 void buffer::enabled( bool value )
@@ -152,6 +160,11 @@ void setup( const string& file_name, bool console_output, int log_level )
 void truncate()
 {
     destination::instance().truncate();
+}
+
+void cleanup()
+{
+    destination::destroy();
 }
 
 } //namespace logger
