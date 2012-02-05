@@ -63,6 +63,7 @@ public:
     // define an operator<< to take in std::endl
     buffer& operator<<(StandardEndLine manip);
     buffer& operator<<(const std::wstring& s);
+    buffer& operator<<(const wchar_t* s) { return (*this) << std::wstring(s);}
 private:
     void init_data();
 
