@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "logger.h"
 
+#include <Windows.h>
+
 #include <iostream>
 
 #include <boost/filesystem.hpp>
@@ -146,6 +148,11 @@ buffer& buffer::operator<<( StandardEndLine manip )
     return *this;
 }
 
+buffer& buffer::operator<<( const std::wstring& s )
+{
+    return (*this) << string_cast<std::string>(s);
+}
+
 void setup( const string& file_name, bool console_output, int log_level )
 {
     destination::instance().set_file_name(file_name);
@@ -166,5 +173,62 @@ void cleanup()
 {
     destination::destroy();
 }
+
+template <>
+std::string string_cast(const std::wstring& src)
+{
+    string dest;
+    if (!src.empty()) {
+        size_t size = ::WideCharToMultiByte(
+            CP_ACP,
+            0, //WC_DEFAULTCHAR,
+            src.c_str(),
+            src.size(), // not incl 0
+            NULL,
+            0, // return buf size in bytes
+            NULL, //"?", // def char
+            NULL // &lb_UsedDefChar
+            );
+        assert_throw(size != 0);
+        dest.resize(size);
+        ::WideCharToMultiByte(
+            CP_ACP,
+            0, //WC_DEFAULTCHAR,
+            src.c_str(),
+            src.size(), // not incl 0
+            &dest[0],
+            size,
+            NULL, //"?", // def char
+            NULL  //&lb_UsedDefChar
+            );
+    }
+    return dest;
+}
+
+std::string get_last_error()
+{
+    std::string message;
+    DWORD error = GetLastError();
+    char* msg;
+    size_t size = FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        error,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPSTR)&msg,
+        0, NULL);
+    if (size != 0) {
+        message.resize(size);
+        strncpy(&message[0], msg, size);
+        LocalFree(msg);
+    }
+    else {
+        message = "FormatMessage failed";
+    }
+    return message;
+}
+
 
 } //namespace logger

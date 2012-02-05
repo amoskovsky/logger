@@ -18,6 +18,9 @@ using namespace std;
 using boost::mutex;
 using boost::thread_specific_ptr;
 
+template <class T, class S> T string_cast(const S& src);
+template <> std::string string_cast(const std::wstring& src);
+
 class destination {
 public:
     static destination& instance();
@@ -59,6 +62,7 @@ public:
     typedef CoutType& (*StandardEndLine)(CoutType&);
     // define an operator<< to take in std::endl
     buffer& operator<<(StandardEndLine manip);
+    buffer& operator<<(const std::wstring& s);
 private:
     void init_data();
 
@@ -82,6 +86,8 @@ extern buffer error_logger;
 void setup(const string& file_name, bool console_output, int log_level);
 void truncate();
 void cleanup();
+
+std::string get_last_error();
 
 } // namespace logger 
 
