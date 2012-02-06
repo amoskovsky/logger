@@ -87,6 +87,7 @@ extern buffer error_logger;
 void setup(const string& file_name, bool console_output, int log_level);
 void truncate();
 void cleanup();
+void set_level(int log_level);
 
 std::string get_last_error();
 

@@ -164,6 +164,16 @@ void setup( const string& file_name, bool console_output, int log_level )
     error_logger.enabled(log_level >= 1);
 }
 
+void set_level( int log_level )
+{
+    trace_logger.enabled(log_level >= 5);
+    debug_logger.enabled(log_level >= 4);
+    info_logger.enabled(log_level >= 3);
+    warn_logger.enabled(log_level >= 2);
+    error_logger.enabled(log_level >= 1);
+}
+
+
 void truncate()
 {
     destination::instance().truncate();
