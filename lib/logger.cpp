@@ -215,6 +215,8 @@ std::string string_cast(const std::wstring& src)
     return dest;
 }
 
+
+
 std::string get_last_error()
 {
     std::string message;

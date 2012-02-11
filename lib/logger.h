@@ -20,6 +20,7 @@ using boost::thread_specific_ptr;
 
 template <class T, class S> T string_cast(const S& src);
 template <> std::string string_cast(const std::wstring& src);
+template <> inline std::string string_cast(const std::string& src) { return src; }
 
 class destination {
 public:
