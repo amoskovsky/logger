@@ -33,6 +33,8 @@ public:
     void set_file_name(const string& file_name);
     void write(const string& data);
     void truncate();
+    void level(int level) { m_level = level; }
+    int level() { return m_level; }
 private:
     destination();
 
@@ -43,6 +45,7 @@ private:
     static destination* m_instance;
     bool m_file_output;
     bool m_console_output;
+    int m_level;
 };
 
 class buffer {
@@ -79,6 +82,7 @@ private:
     thread_specific_ptr<data> m_data;
 };
 
+
 extern buffer trace_logger;
 extern buffer debug_logger;
 extern buffer info_logger;
@@ -91,6 +95,20 @@ void cleanup();
 void set_level(int log_level);
 
 std::string get_last_error();
+
+struct scoped_level {
+    scoped_level(int level)
+        : m_level(destination::instance().level())
+    {
+        set_level(level);
+    }
+    ~scoped_level()
+    {
+        set_level(m_level);
+    }
+private:
+    int m_level;
+};
 
 } // namespace logger 
 

@@ -23,6 +23,7 @@ buffer error_logger(destination::instance(), ":E:");
 destination::destination()
 : m_file_output(false)
 , m_console_output(false)
+, m_level(0)
 {
 }
 
@@ -157,15 +158,18 @@ void setup( const string& file_name, bool console_output, int log_level )
 {
     destination::instance().set_file_name(file_name);
     destination::instance().console_output(console_output);
+    destination::instance().level(log_level);
     trace_logger.enabled(log_level >= 5);
     debug_logger.enabled(log_level >= 4);
     info_logger.enabled(log_level >= 3);
     warn_logger.enabled(log_level >= 2);
     error_logger.enabled(log_level >= 1);
+
 }
 
 void set_level( int log_level )
 {
+    destination::instance().level(log_level);
     trace_logger.enabled(log_level >= 5);
     debug_logger.enabled(log_level >= 4);
     info_logger.enabled(log_level >= 3);
